@@ -1,0 +1,136 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20px;
+}
+
+.game-container {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  width: 100%;
+  max-width: 480px;
+  padding: 24px;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+header h1 {
+  color: #4a4a4a;
+  margin-bottom: 10px;
+}
+
+.score-board {
+  display: flex;
+  justify-content: space-between;
+  background: #f5f5f9;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: bold;
+  color: #555;
+}
+
+.question-card p#question-text {
+  font-size: 1.2rem;
+  color: #333;
+  margin-bottom: 16px;
+  text-align: center;
+  min-height: 50px;
+}
+
+.answer-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.answer-btn {
+  padding: 14px;
+  border: 2px solid #764ba2;
+  background: #fff;
+  color: #764ba2;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.2s;
+}
+
+.answer-btn:hover {
+  background: #764ba2;
+  color: #fff;
+}
+
+.answer-btn.correct {
+  background: #4caf50;
+  border-color: #4caf50;
+  color: #fff;
+}
+
+.answer-btn.wrong {
+  background: #f44336;
+  border-color: #f44336;
+  color: #fff;
+}
+
+.feedback {
+  margin-top: 16px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.feedback.correct-text { color: #4caf50; }
+.feedback.wrong-text { color: #f44336; }
+
+#result-screen {
+  text-align: center;
+}
+
+#result-screen h2 {
+  margin-bottom: 12px;
+  color: #4a4a4a;
+}
+
+#final-score {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #764ba2;
+}
+
+#restart-btn {
+  margin-top: 20px;
+  padding: 12px 24px;
+  background: #764ba2;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+#restart-btn:hover {
+  background: #5e3a85;
+}
+
+footer {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 0.75rem;
+  color: #999;
+}
+
+.hidden {
+  display: none;
+}
