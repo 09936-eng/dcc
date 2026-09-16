@@ -1,42 +1,885 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>เกมทายคำศัพท์ - Quiz Game</title>
-  <link rel="icon" type="image/svg+xml" href="assets/icon.svg">
-  <link rel="stylesheet" href="css/style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Science Lab Escape</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial, sans-serif;
+}
+
+body{
+    background:#08111f;
+    color:white;
+    overflow:hidden;
+}
+
+/* หน้าเกม */
+#game{
+    width:100vw;
+    height:100vh;
+    position:relative;
+    overflow:hidden;
+    background:
+    linear-gradient(rgba(0,220,255,.06) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,220,255,.06) 1px,transparent 1px),
+    #101c2f;
+    background-size:40px 40px;
+}
+
+/* HUD */
+#hud{
+    position:absolute;
+    top:15px;
+    left:50%;
+    transform:translateX(-50%);
+    width:min(900px,95%);
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    z-index:10;
+}
+
+.hudBox{
+    background:rgba(7,15,30,.85);
+    border:2px solid #2de2e6;
+    border-radius:15px;
+    padding:10px 18px;
+    box-shadow:0 0 15px rgba(45,226,230,.4);
+    font-weight:bold;
+}
+
+/* ตัวละคร */
+#player{
+    width:45px;
+    height:45px;
+    position:absolute;
+    left:80px;
+    top:300px;
+    border-radius:50%;
+    background:linear-gradient(135deg,#00eaff,#2979ff);
+    border:3px solid white;
+    box-shadow:0 0 25px #00eaff;
+    transition:transform .1s;
+    z-index:5;
+}
+
+#player::after{
+    content:"🧑‍🔬";
+    position:absolute;
+    font-size:32px;
+    left:4px;
+    top:2px;
+}
+
+/* คริสตัล */
+.crystal{
+    width:30px;
+    height:30px;
+    position:absolute;
+    background:#b026ff;
+    transform:rotate(45deg);
+    box-shadow:0 0 20px #b026ff;
+    animation:float 1.2s infinite alternate;
+}
+
+@keyframes float{
+    from{transform:rotate(45deg) translateY(0);}
+    to{transform:rotate(45deg) translateY(-8px);}
+}
+
+/* แบตเตอรี่ */
+.battery{
+    width:45px;
+    height:25px;
+    position:absolute;
+    background:#ffe600;
+    border:3px solid white;
+    border-radius:5px;
+    box-shadow:0 0 20px #ffe600;
+}
+
+.battery::after{
+    content:"⚡";
+    position:absolute;
+    font-size:25px;
+    left:8px;
+    top:-5px;
+}
+
+/* สารอันตราย */
+.hazard{
+    width:65px;
+    height:65px;
+    position:absolute;
+    border-radius:50%;
+    background:#ff1744;
+    box-shadow:0 0 25px #ff1744;
+    animation:pulse .8s infinite alternate;
+}
+
+.hazard::after{
+    content:"☣";
+    position:absolute;
+    font-size:38px;
+    left:13px;
+    top:8px;
+}
+
+@keyframes pulse{
+    from{transform:scale(.9);}
+    to{transform:scale(1.1);}
+}
+
+/* ประตู */
+#door{
+    width:70px;
+    height:110px;
+    position:absolute;
+    right:40px;
+    top:250px;
+    background:#555;
+    border:4px solid #999;
+    border-radius:8px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:35px;
+}
+
+#door.open{
+    background:#00c853;
+    box-shadow:0 0 30px #00ff88;
+}
+
+/* ข้อความ */
+#message{
+    position:absolute;
+    top:90px;
+    left:50%;
+    transform:translateX(-50%);
+    text-align:center;
+    font-size:18px;
+    color:#bdefff;
+    z-index:10;
+}
+
+/* หน้าจอเริ่ม */
+#startScreen,
+#resultScreen{
+    position:absolute;
+    inset:0;
+    background:rgba(3,8,18,.95);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    z-index:100;
+    padding:20px;
+}
+
+#resultScreen{
+    display:none;
+}
+
+h1{
+    font-size:clamp(35px,8vw,75px);
+    color:#2de2e6;
+    text-shadow:0 0 25px #00eaff;
+    margin-bottom:15px;
+}
+
+p{
+    margin:8px;
+    color:#d8e8ff;
+}
+
+button{
+    border:none;
+    border-radius:30px;
+    padding:15px 35px;
+    margin-top:20px;
+    font-size:20px;
+    font-weight:bold;
+    cursor:pointer;
+    background:linear-gradient(135deg,#00eaff,#7b2cff);
+    color:white;
+    box-shadow:0 0 20px rgba(0,234,255,.5);
+    transition:.2s;
+}
+
+button:hover{
+    transform:scale(1.08);
+}
+
+/* ปุ่มมือถือ */
+#controls{
+    position:absolute;
+    bottom:20px;
+    left:50%;
+    transform:translateX(-50%);
+    display:none;
+    z-index:20;
+}
+
+.controlRow{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+}
+
+.control{
+    width:60px;
+    height:60px;
+    border-radius:18px;
+    background:rgba(0,234,255,.3);
+    border:2px solid #2de2e6;
+    color:white;
+    font-size:25px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    user-select:none;
+}
+
+@media(max-width:768px){
+    #controls{
+        display:block;
+    }
+
+    .hudBox{
+        font-size:13px;
+        padding:8px;
+    }
+
+    #door{
+        right:15px;
+    }
+}
+</style>
 </head>
+
 <body>
-  <div class="game-container">
-    <header>
-      <h1>🎯 เกมทายคำศัพท์</h1>
-      <div class="score-board">
-        <span>คะแนน: <span id="score">0</span></span>
-        <span>ข้อที่: <span id="question-number">1</span>/<span id="total-questions">0</span></span>
-      </div>
-    </header>
 
-    <main id="game-screen">
-      <div class="question-card">
-        <p id="question-text">กำลังโหลดคำถาม...</p>
-        <div id="answer-buttons" class="answer-grid"></div>
-      </div>
-      <div id="feedback" class="feedback hidden"></div>
-    </main>
+<div id="game">
 
-    <main id="result-screen" class="hidden">
-      <h2>🎉 จบเกมแล้ว!</h2>
-      <p>คะแนนของคุณ: <span id="final-score"></span></p>
-      <button id="restart-btn">เล่นอีกครั้ง</button>
-    </main>
+<div id="hud">
+    <div class="hudBox">❤️ <span id="health">3</span></div>
+    <div class="hudBox">⭐ <span id="score">0</span></div>
+    <div class="hudBox">🔋 <span id="batteryCount">0</span></div>
+    <div class="hudBox">⏱️ <span id="time">60</span></div>
+    <div class="hudBox">🗺️ LEVEL <span id="level">1</span></div>
+</div>
 
-    <footer>
-      <p>ตัวอย่างโครงสร้างเว็บแอปพลิเคชัน | HTML + CSS + JS แยกไฟล์</p>
-    </footer>
-  </div>
+<div id="message">
+    เก็บ 🔋 เพื่อเปิดประตู แล้วไปยังทางออก!
+</div>
 
-  <script src="js/questions.js"></script>
-  <script src="js/script.js"></script>
+<div id="player"></div>
+<div id="door">🔒</div>
+
+<div id="controls">
+
+    <div class="controlRow">
+        <div class="control" data-key="ArrowUp">▲</div>
+    </div>
+
+    <div class="controlRow">
+        <div class="control" data-key="ArrowLeft">◀</div>
+        <div class="control" data-key="ArrowDown">▼</div>
+        <div class="control" data-key="ArrowRight">▶</div>
+    </div>
+
+</div>
+
+</div>
+
+<div id="startScreen">
+
+<h1>🧪 SCIENCE LAB ESCAPE</h1>
+
+<p>เกมผจญภัยวิทยาศาสตร์</p>
+<p>🎮 เดินเก็บคริสตัล</p>
+<p>🔋 เก็บแบตเตอรี่เพื่อเปิดประตู</p>
+<p>☣️ หลีกเลี่ยงสารอันตราย</p>
+<p>🚪 ไปยังประตูเพื่อผ่านด่าน</p>
+
+<button onclick="startGame()">เริ่มเกม 🚀</button>
+
+</div>
+
+<div id="resultScreen">
+
+<h1 id="resultTitle">MISSION COMPLETE!</h1>
+
+<p id="resultText"></p>
+
+<button onclick="restartGame()">เล่นอีกครั้ง 🔄</button>
+
+</div>
+
+
+<script>
+
+/* =====================
+ตัวแปรเกม
+===================== */
+
+const game = document.getElementById("game");
+const player = document.getElementById("player");
+const door = document.getElementById("door");
+
+let playerX = 80;
+let playerY = 300;
+
+let speed = 6;
+
+let score = 0;
+let health = 3;
+let batteries = 0;
+
+let level = 1;
+let time = 60;
+
+let gameRunning = false;
+let keys = {};
+
+let timer;
+
+
+/* =====================
+ข้อมูลด่าน
+===================== */
+
+const levels = [
+
+{
+    batteries:2,
+    crystals:5,
+    hazards:3,
+    time:60,
+    message:"LEVEL 1: เก็บแบตเตอรี่เพื่อเปิดประตู!"
+},
+
+{
+    batteries:3,
+    crystals:7,
+    hazards:5,
+    time:55,
+    message:"LEVEL 2: ระวังสารอันตรายมากขึ้น!"
+},
+
+{
+    batteries:4,
+    crystals:10,
+    hazards:7,
+    time:50,
+    message:"LEVEL 3: หนีออกจากห้องทดลองให้สำเร็จ!"
+}
+
+];
+
+
+/* =====================
+เริ่มเกม
+===================== */
+
+function startGame(){
+
+    document.getElementById("startScreen").style.display="none";
+
+    level = 1;
+    score = 0;
+    health = 3;
+
+    loadLevel();
+
+}
+
+
+/* =====================
+โหลดด่าน
+===================== */
+
+function loadLevel(){
+
+    clearObjects();
+
+    batteries = 0;
+
+    const data = levels[level-1];
+
+    time = data.time;
+
+    playerX = 80;
+    playerY = window.innerHeight/2;
+
+    updatePlayer();
+
+    document.getElementById("level").textContent = level;
+
+    document.getElementById("message").textContent =
+    data.message;
+
+    door.classList.remove("open");
+
+    door.textContent="🔒";
+
+    createObjects("battery",data.batteries);
+
+    createObjects("crystal",data.crystals);
+
+    createObjects("hazard",data.hazards);
+
+    gameRunning=true;
+
+    clearInterval(timer);
+
+    timer=setInterval(()=>{
+
+        if(!gameRunning) return;
+
+        time--;
+
+        document.getElementById("time").textContent=time;
+
+        if(time<=0){
+
+            loseGame("หมดเวลาแล้ว ⏰");
+
+        }
+
+    },1000);
+
+}
+
+
+/* =====================
+สร้างวัตถุ
+===================== */
+
+function createObjects(type,count){
+
+    for(let i=0;i<count;i++){
+
+        const obj=document.createElement("div");
+
+        obj.className=type;
+
+        obj.dataset.type=type;
+
+        let x,y;
+
+        do{
+
+            x=Math.random()*(window.innerWidth-150)+70;
+
+            y=Math.random()*(window.innerHeight-250)+130;
+
+        }
+        while(x<180 && y>playerY-150 && y<playerY+150);
+
+        obj.style.left=x+"px";
+
+        obj.style.top=y+"px";
+
+        game.appendChild(obj);
+
+    }
+
+}
+
+
+/* =====================
+ลบของเก่า
+===================== */
+
+function clearObjects(){
+
+    document
+    .querySelectorAll(".battery,.crystal,.hazard")
+    .forEach(obj=>obj.remove());
+
+}
+
+
+/* =====================
+ควบคุมคีย์บอร์ด
+===================== */
+
+window.addEventListener("keydown",e=>{
+
+    keys[e.key]=true;
+
+});
+
+window.addEventListener("keyup",e=>{
+
+    keys[e.key]=false;
+
+});
+
+
+/* =====================
+ควบคุมมือถือ
+===================== */
+
+document.querySelectorAll(".control").forEach(btn=>{
+
+    btn.addEventListener("touchstart",e=>{
+
+        e.preventDefault();
+
+        keys[btn.dataset.key]=true;
+
+    });
+
+    btn.addEventListener("touchend",()=>{
+
+        keys[btn.dataset.key]=false;
+
+    });
+
+    btn.addEventListener("mousedown",()=>{
+
+        keys[btn.dataset.key]=true;
+
+    });
+
+    btn.addEventListener("mouseup",()=>{
+
+        keys[btn.dataset.key]=false;
+
+    });
+
+});
+
+
+/* =====================
+ขยับตัวละคร
+===================== */
+
+function updatePlayer(){
+
+    player.style.left=playerX+"px";
+
+    player.style.top=playerY+"px";
+
+}
+
+
+function gameLoop(){
+
+    if(gameRunning){
+
+        if(keys["ArrowUp"] || keys["w"]){
+
+            playerY-=speed;
+
+        }
+
+        if(keys["ArrowDown"] || keys["s"]){
+
+            playerY+=speed;
+
+        }
+
+        if(keys["ArrowLeft"] || keys["a"]){
+
+            playerX-=speed;
+
+        }
+
+        if(keys["ArrowRight"] || keys["d"]){
+
+            playerX+=speed;
+
+        }
+
+        playerX=Math.max(0,
+        Math.min(window.innerWidth-45,playerX));
+
+        playerY=Math.max(100,
+        Math.min(window.innerHeight-50,playerY));
+
+        updatePlayer();
+
+        checkCollision();
+
+    }
+
+    requestAnimationFrame(gameLoop);
+
+}
+
+gameLoop();
+
+
+/* =====================
+ตรวจการชน
+===================== */
+
+function checkCollision(){
+
+    const p=player.getBoundingClientRect();
+
+
+    /* คริสตัล */
+
+    document.querySelectorAll(".crystal")
+    .forEach(obj=>{
+
+        if(isColliding(p,obj.getBoundingClientRect())){
+
+            score+=10;
+
+            obj.remove();
+
+            updateHUD();
+
+        }
+
+    });
+
+
+    /* แบตเตอรี่ */
+
+    document.querySelectorAll(".battery")
+    .forEach(obj=>{
+
+        if(isColliding(p,obj.getBoundingClientRect())){
+
+            batteries++;
+
+            score+=20;
+
+            obj.remove();
+
+            updateHUD();
+
+            checkDoor();
+
+        }
+
+    });
+
+
+    /* อันตราย */
+
+    document.querySelectorAll(".hazard")
+    .forEach(obj=>{
+
+        if(isColliding(p,obj.getBoundingClientRect())){
+
+            obj.remove();
+
+            health--;
+
+            updateHUD();
+
+            playerX=80;
+            playerY=window.innerHeight/2;
+
+            if(health<=0){
+
+                loseGame("พลังชีวิตหมดแล้ว 💥");
+
+            }
+
+        }
+
+    });
+
+
+    /* ประตู */
+
+    if(door.classList.contains("open")){
+
+        if(isColliding(
+            p,
+            door.getBoundingClientRect()
+        )){
+
+            nextLevel();
+
+        }
+
+    }
+
+}
+
+
+/* =====================
+ชนกันหรือไม่
+===================== */
+
+function isColliding(a,b){
+
+    return !(
+
+        a.right<b.left ||
+        a.left>b.right ||
+        a.bottom<b.top ||
+        a.top>b.bottom
+
+    );
+
+}
+
+
+/* =====================
+ตรวจประตู
+===================== */
+
+function checkDoor(){
+
+    const required=levels[level-1].batteries;
+
+    if(batteries>=required){
+
+        door.classList.add("open");
+
+        door.textContent="🚪";
+
+        document.getElementById("message").textContent=
+        "ประตูเปิดแล้ว! รีบไปที่ประตู 🚀";
+
+    }
+
+}
+
+
+/* =====================
+อัปเดต HUD
+===================== */
+
+function updateHUD(){
+
+    document.getElementById("score").textContent=score;
+
+    document.getElementById("health").textContent=health;
+
+    document.getElementById("batteryCount").textContent=batteries;
+
+}
+
+
+/* =====================
+ผ่านด่าน
+===================== */
+
+function nextLevel(){
+
+    gameRunning=false;
+
+    clearInterval(timer);
+
+    score+=100;
+
+    updateHUD();
+
+    if(level < levels.length){
+
+        level++;
+
+        setTimeout(()=>{
+
+            loadLevel();
+
+        },800);
+
+    }
+
+    else{
+
+        winGame();
+
+    }
+
+}
+
+
+/* =====================
+ชนะเกม
+===================== */
+
+function winGame(){
+
+    gameRunning=false;
+
+    clearInterval(timer);
+
+    document.getElementById("resultScreen").style.display="flex";
+
+    document.getElementById("resultTitle").textContent=
+    "🏆 YOU ESCAPED!";
+
+    document.getElementById("resultText").textContent=
+    "คุณหนีออกจากห้องทดลองสำเร็จ! คะแนนทั้งหมด: "+score;
+
+}
+
+
+/* =====================
+แพ้เกม
+===================== */
+
+function loseGame(reason){
+
+    gameRunning=false;
+
+    clearInterval(timer);
+
+    document.getElementById("resultScreen").style.display="flex";
+
+    document.getElementById("resultTitle").textContent=
+    "GAME OVER 💥";
+
+    document.getElementById("resultText").textContent=
+    reason+" คะแนนของคุณ: "+score;
+
+}
+
+
+/* =====================
+เริ่มใหม่
+===================== */
+
+function restartGame(){
+
+    document.getElementById("resultScreen").style.display="none";
+
+    startGame();
+
+}
+
+
+/* =====================
+ปรับหน้าจอ
+===================== */
+
+window.addEventListener("resize",()=>{
+
+    playerX=Math.min(
+        playerX,
+        window.innerWidth-50
+    );
+
+    playerY=Math.min(
+        playerY,
+        window.innerHeight-60
+    );
+
+});
+
+</script>
+
 </body>
 </html>
