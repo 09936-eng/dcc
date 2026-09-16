@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>เกมทายคำศัพท์ - Quiz Game</title>
+  <link rel="icon" type="image/svg+xml" href="assets/icon.svg">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="game-container">
+    <header>
+      <h1>🎯 เกมทายคำศัพท์</h1>
+      <div class="score-board">
+        <span>คะแนน: <span id="score">0</span></span>
+        <span>ข้อที่: <span id="question-number">1</span>/<span id="total-questions">0</span></span>
+      </div>
+    </header>
+
+    <main id="game-screen">
+      <div class="question-card">
+        <p id="question-text">กำลังโหลดคำถาม...</p>
+        <div id="answer-buttons" class="answer-grid"></div>
+      </div>
+      <div id="feedback" class="feedback hidden"></div>
+    </main>
+
+    <main id="result-screen" class="hidden">
+      <h2>🎉 จบเกมแล้ว!</h2>
+      <p>คะแนนของคุณ: <span id="final-score"></span></p>
+      <button id="restart-btn">เล่นอีกครั้ง</button>
+    </main>
+
+    <footer>
+      <p>ตัวอย่างโครงสร้างเว็บแอปพลิเคชัน | HTML + CSS + JS แยกไฟล์</p>
+    </footer>
+  </div>
+
+  <script src="js/questions.js"></script>
+  <script src="js/script.js"></script>
+</body>
+</html>
