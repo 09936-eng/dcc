@@ -1,1166 +1,304 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>SCIENCE MISSION X</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Science Mission X - ภารกิจวิทยาศาสตร์</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
 
-<style>
-*{box-sizing:border-box}
-body{
- margin:0;
- font-family:Arial,sans-serif;
- background:#071426;
- color:white;
- overflow:hidden
-}
-button{
- border:0;
- border-radius:15px;
- padding:14px 25px;
- margin:6px;
- font-size:18px;
- font-weight:bold;
- color:white;
- background:linear-gradient(135deg,#00cfff,#743cff);
- cursor:pointer
-}
-button:active{transform:scale(.94)}
+    body {
+      background-color: #0f172a;
+      color: #f8fafc;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
 
-.screen{
- display:none;
- position:absolute;
- inset:0;
- align-items:center;
- justify-content:center;
- text-align:center
-}
-.screen.active{display:flex}
+    header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
 
-#menu{
- background:
- radial-gradient(circle at 20% 20%,#124d72,transparent 30%),
- radial-gradient(circle at 80% 80%,#54217b,transparent 30%),
- #071426
-}
+    header h1 {
+      font-size: 2.5rem;
+      color: #38bdf8;
+      text-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+    }
 
-.menu{
- width:min(500px,92%);
- padding:35px;
- background:#081d39dd;
- border:2px solid #28ddff;
- border-radius:30px;
- box-shadow:0 0 40px #00d9ff55
-}
+    .container {
+      max-width: 900px;
+      width: 100%;
+      background: #1e293b;
+      padding: 25px;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    }
 
-.logo{font-size:70px}
-h1{
- font-size:clamp(38px,8vw,70px);
- color:#54eaff;
- text-shadow:0 0 25px #00dfff;
- margin:5px
-}
-.subtitle{color:#cdefff;margin:15px}
+    .instructions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 15px;
+      margin-bottom: 25px;
+    }
 
-.menu button{display:block;width:90%;margin:12px auto}
+    .card {
+      background: #334155;
+      padding: 15px;
+      border-radius: 10px;
+      border-left: 4px solid #38bdf8;
+    }
 
-.panel{
- width:min(950px,94%);
- max-height:90vh;
- overflow:auto;
- background:#081d39f5;
- border:2px solid #2de2e6;
- border-radius:25px;
- padding:25px
-}
+    .card h3 {
+      color: #38bdf8;
+      margin-bottom: 10px;
+    }
 
-h2{color:#55eaff}
+    .equipment-card {
+      border-left-color: #4ade80;
+    }
 
-.levels{
- display:grid;
- grid-template-columns:repeat(5,1fr);
- gap:12px
-}
+    .equipment-card h3 {
+      color: #4ade80;
+    }
 
-.level{
- min-height:120px;
- background:#112d4d;
- border:2px solid #245a7d;
- border-radius:18px;
- padding:12px
-}
-.level.unlocked{border-color:#3eeaff}
-.level.locked{opacity:.4}
-.level-icon{font-size:35px}
+    .equipment-list {
+      list-style: none;
+    }
 
-.how{
- display:grid;
- grid-template-columns:repeat(3,1fr);
- gap:15px
-}
-.card{
- background:#112d4d;
- border-radius:18px;
- padding:18px;
- text-align:left
-}
+    .equipment-list li {
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+      line-height: 1.4;
+    }
 
-#game{
- position:absolute;
- inset:0;
- background:
- linear-gradient(#ffffff08 1px,transparent 1px),
- linear-gradient(90deg,#ffffff08 1px,transparent 1px),
- #0b2038;
- background-size:45px 45px
-}
+    #game-board {
+      background: #0f172a;
+      border: 2px solid #38bdf8;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      margin-top: 20px;
+    }
 
-#hud{
- position:absolute;
- top:10px;
- left:50%;
- transform:translateX(-50%);
- width:min(900px,95%);
- z-index:20;
- display:flex;
- justify-content:space-between;
- gap:5px
-}
-.hud{
- background:#06152cee;
- border:2px solid #32dcff;
- border-radius:12px;
- padding:8px 13px;
- font-weight:bold
-}
+    .stats {
+      display: flex;
+      justify-content: space-around;
+      font-size: 1.2rem;
+      margin-bottom: 15px;
+      background: #1e293b;
+      padding: 10px;
+      border-radius: 8px;
+    }
 
-#mission{
- position:absolute;
- top:65px;
- left:50%;
- transform:translateX(-50%);
- z-index:20;
- background:#06152eee;
- border:2px solid #55eaff;
- border-radius:15px;
- padding:10px 20px;
- max-width:90%;
-}
+    .btn {
+      background: #0284c7;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.2s;
+      margin-top: 10px;
+    }
 
-#player{
- position:absolute;
- width:52px;
- height:52px;
- display:flex;
- justify-content:center;
- align-items:center;
- font-size:36px;
- border-radius:50%;
- background:#178dff;
- border:3px solid white;
- box-shadow:0 0 25px #00dfff;
- z-index:10
-}
+    .btn:hover {
+      background: #0369a1;
+    }
 
-.obj{
- position:absolute;
- width:58px;
- height:58px;
- display:flex;
- justify-content:center;
- align-items:center;
- font-size:38px;
- z-index:5
-}
+    .quiz-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 15px;
+    }
 
-.crystal{filter:drop-shadow(0 0 12px #c53cff)}
-.science{filter:drop-shadow(0 0 12px #42efff)}
-.tool{filter:drop-shadow(0 0 12px #ffe000)}
-.hazard{
- background:#e51c55;
- border-radius:50%;
- box-shadow:0 0 25px #e51c55
-}
+    .opt-btn {
+      background: #475569;
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
 
-#exit{
- position:absolute;
- right:30px;
- top:43%;
- font-size:60px;
- width:80px;
- height:110px;
- display:flex;
- justify-content:center;
- align-items:center;
- background:#414b59;
- border:4px solid #aaa;
- border-radius:12px;
- z-index:5
-}
-#exit.open{
- background:#00b85a;
- box-shadow:0 0 30px #00ff91
-}
-
-#controls{
- position:absolute;
- bottom:15px;
- left:15px;
- z-index:30;
- display:none
-}
-.move{
- width:58px;
- height:58px;
- padding:0;
- font-size:24px;
- background:#123a61dd;
- border:2px solid #4deaff
-}
-
-.question{
- width:min(700px,94%);
- background:#081d39;
- border:2px solid #48e7ff;
- border-radius:25px;
- padding:28px
-}
-.answers{
- display:grid;
- gap:10px
-}
-.answer{
- width:100%;
- text-align:left;
- background:#12365a;
- border:2px solid #285d82
-}
-#explain{
- display:none;
- margin-top:15px;
- padding:15px;
- background:#102f4d;
- border-radius:12px
-}
-
-.result{
- width:min(600px,94%);
- padding:40px;
- background:#081d39;
- border:2px solid #54eaff;
- border-radius:30px
-}
-
-@media(max-width:700px){
- .levels{grid-template-columns:repeat(2,1fr)}
- .how{grid-template-columns:1fr}
- #controls{display:block}
- #hud{font-size:12px}
- #mission{font-size:13px}
-}
-</style>
+    .opt-btn:hover {
+      background: #64748b;
+    }
+  </style>
 </head>
-
 <body>
 
-<!-- MENU -->
-<section id="menu" class="screen active">
-<div class="menu">
-<div class="logo">🧪</div>
-<h1>SCIENCE<br>MISSION X</h1>
-<div class="subtitle">ภารกิจวิทยาศาสตร์</div>
-
-<button onclick="startLevel(1)">▶️ เริ่มเกม</button>
-<button onclick="openLevels()">🗺️ เลือกด่าน</button>
-<button onclick="openHow()">📖 วิธีการเล่น</button>
-<button onclick="openScore()">🏆 คะแนนสูงสุด</button>
-</div>
-</section>
-
-
-<!-- HOW -->
-<section id="how" class="screen">
-<div class="panel">
-<h2>📖 วิธีการเล่น</h2>
-
-<div class="how">
-
-<div class="card">
-<h3>🎮 ควบคุม</h3>
-<p>⬆️ ขึ้น</p>
-<p>⬇️ ลง</p>
-<p>⬅️ ซ้าย</p>
-<p>➡️ ขวา</p>
-<p>W A S D ใช้แทนปุ่มได้</p>
-<p>📱 มือถือกดปุ่มด้านล่าง</p>
-</div>
-
-<div class="card">
-<h3>🎯 เป้าหมาย</h3>
-<p>สำรวจพื้นที่</p>
-<p>ทำภารกิจ</p>
-<p>แก้ปริศนา</p>
-<p>ตอบคำถามวิทยาศาสตร์</p>
-<p>เปิดประตูและผ่านด่าน</p>
-</div>
-
-<div class="card">
-<h3>⭐ คะแนน</h3>
-<p>ตอบถูก +50</p>
-<p>ภารกิจ +100</p>
-<p>เก็บคริสตัล +10</p>
-<p>ตอบผิด -20</p>
-<p>ชนอันตราย -1 ❤️</p>
-</div>
-
-</div>
-
-<button onclick="show('menu')">← กลับ</button>
-</div>
-</section>
-
-
-<!-- LEVEL SELECT -->
-<section id="levels" class="screen">
-<div class="panel">
-<h2>🗺️ SELECT MISSION</h2>
-<div id="levelList" class="levels"></div>
-<button onclick="show('menu')">← กลับ</button>
-</div>
-</section>
-
-
-<!-- GAME -->
-<section id="gameScreen" class="screen">
-
-<div id="game">
-
-<div id="hud">
-<div class="hud">❤️ <span id="hp">3</span></div>
-<div class="hud">⭐ <span id="points">0</span></div>
-<div class="hud">🎯 <span id="qcount">0</span></div>
-<div class="hud">⏱️ <span id="time">60</span></div>
-</div>
-
-<div id="mission"></div>
-
-<div id="player">🧑‍🔬</div>
-
-<div id="objects"></div>
-
-<div id="exit">🚪</div>
-
-<div id="controls">
-<div style="text-align:center">
-<button class="move" data-key="ArrowUp">⬆️</button>
-</div>
-<div>
-<button class="move" data-key="ArrowLeft">⬅️</button>
-<button class="move" data-key="ArrowDown">⬇️</button>
-<button class="move" data-key="ArrowRight">➡️</button>
-</div>
-</div>
-
-</div>
-</section>
-
-
-<!-- QUESTION -->
-<section id="questionScreen" class="screen">
-<div class="question">
-
-<h3>🧠 SCIENCE CHALLENGE</h3>
-<h2 id="question"></h2>
-
-<div id="answers" class="answers"></div>
-
-<div id="explain"></div>
-
-<button id="continueBtn" style="display:none" onclick="continueAfterQuestion()">
-➡️ ไปต่อ
-</button>
-
-</div>
-</section>
-
-
-<!-- RESULT -->
-<section id="resultScreen" class="screen">
-<div class="result">
-
-<div style="font-size:80px" id="resultIcon">🏆</div>
-
-<h1 id="resultTitle">MISSION COMPLETE</h1>
-
-<p id="resultText"></p>
-
-<button onclick="openLevels()">🗺️ เลือกด่าน</button>
-<button onclick="show('menu')">🏠 เมนู</button>
-
-</div>
-</section>
-
-
-<script>
-
-/* =====================================================
-DATA
-===================================================== */
-
-const data=[
-
-{
-name:"Circuit Lab",
-icon:"⚡",
-topic:"ไฟฟ้า",
-mission:"ซ่อมวงจรไฟฟ้าและเปิดระบบพลังงาน",
-objects:["🔌","💎","🧰","☣️","💎"],
-questions:[
-["หน่วยของกระแสไฟฟ้าคืออะไร?",["โวลต์","แอมแปร์","โอห์ม","วัตต์"],1,"กระแสไฟฟ้ามีหน่วยเป็นแอมแปร์ (A)"],
-["ถ้าแรงดันเพิ่มขึ้น โดยความต้านทานคงที่ กระแสจะเป็นอย่างไร?",["เพิ่มขึ้น","ลดลง","เท่าเดิม","เป็นศูนย์"],0,"ตามกฎของโอห์ม I = V/R"],
-["อุปกรณ์ใดใช้เปิด-ปิดวงจร?",["สวิตช์","แบตเตอรี่","หลอดไฟ","สายไฟ"],0,"สวิตช์ใช้ควบคุมการเปิดและปิดวงจร"],
-["ความต้านทานมีหน่วยเป็นอะไร?",["แอมแปร์","โวลต์","โอห์ม","จูล"],2,"ความต้านทานมีหน่วยเป็นโอห์ม (Ω)"],
-["อุปกรณ์ใดเปลี่ยนพลังงานไฟฟ้าเป็นแสง?",["หลอดไฟ","มอเตอร์","ลำโพง","แบตเตอรี่"],0,"หลอดไฟเปลี่ยนพลังงานไฟฟ้าเป็นแสงและความร้อน"]
-]
-},
-
-{
-name:"Magnet Lab",
-icon:"🧲",
-topic:"แม่เหล็ก",
-mission:"ใช้แม่เหล็กเพื่อเคลื่อนวัตถุและเปิดประตู",
-objects:["🧲","💎","🧲","☣️","💎"],
-questions:[
-["ขั้วแม่เหล็กเหมือนกันจะเป็นอย่างไร?",["ดูดกัน","ผลักกัน","ไม่มีแรง","หลอมละลาย"],1,"ขั้วเหมือนกันผลักกัน"],
-["วัสดุใดถูกแม่เหล็กดูดได้ดี?",["ไม้","พลาสติก","เหล็ก","แก้ว"],2,"เหล็กเป็นวัสดุที่ถูกแม่เหล็กดูดได้ดี"],
-["เข็มทิศเกี่ยวข้องกับอะไร?",["ความร้อน","สนามแม่เหล็กโลก","แรงเสียดทาน","เสียง"],1,"เข็มทิศจัดแนวตามสนามแม่เหล็กโลก"],
-["บริเวณใดของแม่เหล็กมีแรงมาก?",["ตรงกลาง","ขั้ว","ทุกจุดเท่ากัน","ไม่มี"],1,"สนามแม่เหล็กเข้มบริเวณขั้ว"],
-["ขั้วต่างกันของแม่เหล็กจะ?",["ผลัก","ดูด","ไม่มีแรง","แตก"],1,"ขั้วต่างกันจะดึงดูดกัน"]
-]
-},
-
-{
-name:"Physics Track",
-icon:"🏎️",
-topic:"แรงและการเคลื่อนที่",
-mission:"ควบคุมรถทดลองและศึกษาการเคลื่อนที่",
-objects:["🏎️","💎","📐","☣️","💎"],
-questions:[
-["หน่วยของแรงคืออะไร?",["จูล","นิวตัน","วัตต์","โวลต์"],1,"แรงมีหน่วยเป็นนิวตัน (N)"],
-["แรงเสียดทานมีผลอย่างไร?",["ช่วยต้านการเคลื่อนที่","เพิ่มมวล","สร้างแสง","สร้างน้ำ"],0,"แรงเสียดทานต้านการเคลื่อนที่สัมพัทธ์"],
-["ความเร็วคำนวณจากอะไร?",["ระยะทาง/เวลา","แรง/เวลา","มวล/แรง","เวลา/ระยะทาง"],0,"อัตราเร็ว = ระยะทาง ÷ เวลา"],
-["แรงโน้มถ่วงของโลกดึงวัตถุไปทางใด?",["ขึ้น","ลงสู่โลก","ซ้าย","ขวา"],1,"แรงโน้มถ่วงดึงวัตถุเข้าหาศูนย์กลางโลก"],
-["ถ้าแรงลัพธ์เป็นศูนย์ วัตถุจะ?",["ต้องเร่ง","รักษาสภาพการเคลื่อนที่เดิม","ต้องหยุด","ต้องหมุน"],1,"แรงลัพธ์ศูนย์หมายถึงไม่มีความเร่ง"]
-]
-},
-
-{
-name:"Thermal Lab",
-icon:"🌡️",
-topic:"ความร้อน",
-mission:"ควบคุมอุณหภูมิในห้องทดลอง",
-objects:["🌡️","🔥","💎","🧊","☣️"],
-questions:[
-["ความร้อนถ่ายเทจาก?",["เย็นไปหาร้อน","ร้อนไปหาเย็น","ไม่มีทิศทาง","ขึ้นเสมอ"],1,"ความร้อนถ่ายเทจากอุณหภูมิสูงไปต่ำ"],
-["น้ำแข็งกลายเป็นน้ำเรียกว่า?",["แข็งตัว","หลอมเหลว","ควบแน่น","ระเหิด"],1,"ของแข็งเปลี่ยนเป็นของเหลวเรียกว่าหลอมเหลว"],
-["ไอน้ำกลายเป็นน้ำเรียกว่า?",["ระเหย","ควบแน่น","หลอมเหลว","แข็งตัว"],1,"แก๊สเปลี่ยนเป็นของเหลวเรียกว่าการควบแน่น"],
-["วัสดุใดเป็นฉนวนความร้อนที่ดี?",["ทองแดง","เหล็ก","โฟม","อะลูมิเนียม"],2,"โฟมนำความร้อนได้ต่ำ"],
-["โลหะส่วนใหญ่เป็นตัวนำความร้อนแบบใด?",["ดี","ไม่ดี","ไม่ได้","ไม่มี"],0,"โลหะส่วนใหญ่นำความร้อนได้ดี"]
-]
-},
-
-{
-name:"Chemical Lab",
-icon:"🧪",
-topic:"สารและการเปลี่ยนแปลง",
-mission:"แยกสารปริศนาและค้นหาสารเป้าหมาย",
-objects:["🧪","💎","⚗️","☣️","🔬"],
-questions:[
-["ทรายกับน้ำควรแยกด้วยวิธีใด?",["กรอง","กลั่น","ระเหย","แม่เหล็ก"],0,"ทรายไม่ละลายน้ำจึงใช้การกรองได้"],
-["น้ำเดือดกลายเป็น?",["ของแข็ง","ของเหลว","แก๊ส","โลหะ"],2,"น้ำเปลี่ยนเป็นไอน้ำซึ่งเป็นแก๊ส"],
-["pH ต่ำกว่า 7 โดยทั่วไปหมายถึง?",["กรด","กลาง","เบส","ไม่มีสาร"],0,"สารที่มี pH ต่ำกว่า 7 โดยทั่วไปเป็นกรด"],
-["เหล็กเกิดสนิมเป็นการเปลี่ยนแปลงแบบใด?",["กายภาพ","เคมี","ไม่มีการเปลี่ยน","อุณหภูมิ"],1,"เกิดสารใหม่จึงเป็นการเปลี่ยนแปลงทางเคมี"],
-["สารละลายประกอบด้วย?",["ตัวทำละลายและตัวละลาย","อากาศเท่านั้น","น้ำเท่านั้น","ของแข็งเท่านั้น"],0,"สารละลายมีตัวทำละลายและตัวละลาย"]
-]
-},
-
-{
-name:"Eco World",
-icon:"🌱",
-topic:"ระบบนิเวศ",
-mission:"ฟื้นฟูสมดุลของระบบนิเวศ",
-objects:["🌱","💎","🐟","🦋","☣️"],
-questions:[
-["สิ่งมีชีวิตใดเป็นผู้ผลิต?",["เสือ","ต้นไม้","เห็ด","มนุษย์"],1,"พืชสร้างอาหารเองด้วยการสังเคราะห์ด้วยแสง"],
-["แหล่งพลังงานหลักของระบบนิเวศคือ?",["ดวงจันทร์","ดวงอาทิตย์","ดิน","น้ำ"],1,"ดวงอาทิตย์เป็นแหล่งพลังงานหลัก"],
-["ราโดยทั่วไปมีบทบาทใด?",["ผู้ผลิต","ผู้ย่อยสลาย","ผู้ล่า","ผู้บริโภค"],1,"รามีบทบาทสำคัญในการย่อยสลาย"],
-["ห่วงโซ่อาหารแสดงอะไร?",["การถ่ายโอนพลังงาน","ความเร็ว","อุณหภูมิ","ปริมาณน้ำ"],0,"ห่วงโซ่อาหารแสดงการกินต่อกันและการถ่ายโอนพลังงาน"],
-["การตัดไม้ทำลายป่าอาจทำให้เกิดอะไร?",["สูญเสียถิ่นที่อยู่","เพิ่มป่า","ไม่มีผล","เพิ่มออกซิเจนเสมอ"],0,"การทำลายป่าอาจทำให้สิ่งมีชีวิตสูญเสียถิ่นที่อยู่"]
-]
-},
-
-{
-name:"Human Body",
-icon:"🫀",
-topic:"ร่างกายมนุษย์",
-mission:"ช่วยระบบต่าง ๆ ของร่างกายให้ทำงาน",
-objects:["🫀","🫁","💎","🧠","☣️"],
-questions:[
-["อวัยวะใดสูบฉีดเลือด?",["ปอด","หัวใจ","ตับ","ไต"],1,"หัวใจทำหน้าที่สูบฉีดเลือด"],
-["ปอดเกี่ยวข้องกับอะไร?",["การแลกเปลี่ยนแก๊ส","การย่อย","การสร้างกระดูก","การกรอง"],0,"ปอดทำหน้าที่สำคัญในการแลกเปลี่ยนแก๊ส"],
-["สมองเป็นส่วนหนึ่งของระบบใด?",["ประสาท","ย่อยอาหาร","โครงกระดูก","ขับถ่าย"],0,"สมองเป็นอวัยวะสำคัญของระบบประสาท"],
-["ไตเกี่ยวข้องกับอะไร?",["การกรองของเสียจากเลือด","การมองเห็น","การหายใจโดยตรง","การเคลื่อนไหว"],0,"ไตช่วยกรองของเสียและสร้างปัสสาวะ"],
-["เม็ดเลือดแดงมีหน้าที่สำคัญอะไร?",["ขนส่งออกซิเจน","ย่อยอาหาร","สร้างกระดูก","สร้างเสียง"],0,"เม็ดเลือดแดงมีฮีโมโกลบินช่วยขนส่งออกซิเจน"]
-]
-},
-
-{
-name:"Space Station",
-icon:"🌌",
-topic:"อวกาศ",
-mission:"ซ่อมสถานีอวกาศและนำยานกลับฐาน",
-objects:["🚀","🌎","💎","🪐","☣️"],
-questions:[
-["ดาวเคราะห์ที่เราอาศัยอยู่คือ?",["ดาวอังคาร","โลก","ดาวศุกร์","พฤหัสบดี"],1,"โลกเป็นดาวเคราะห์ดวงที่สามจากดวงอาทิตย์"],
-["ศูนย์กลางระบบสุริยะคือ?",["โลก","ดวงจันทร์","ดวงอาทิตย์","ดาวอังคาร"],2,"ดวงอาทิตย์เป็นดาวฤกษ์ที่อยู่ใจกลางระบบสุริยะ"],
-["แรงใดทำให้ดาวเคราะห์โคจรรอบดวงอาทิตย์?",["แรงโน้มถ่วง","แรงเสียดทาน","แรงแม่เหล็กเท่านั้น","แรงลอยตัว"],0,"แรงโน้มถ่วงของดวงอาทิตย์ช่วยยึดดาวเคราะห์ให้อยู่ในวงโคจร"],
-["ดวงจันทร์เป็นอะไรของโลก?",["ดาวฤกษ์","ดาวเคราะห์","ดาวบริวารธรรมชาติ","กาแล็กซี"],2,"ดวงจันทร์เป็นดาวบริวารธรรมชาติของโลก"],
-["ยานอวกาศต้องใช้สิ่งใดเพื่อเปลี่ยนการเคลื่อนที่?",["แรงขับ","น้ำฝน","แสงอย่างเดียว","เสียง"],0,"แรงขับจากเครื่องยนต์สามารถเปลี่ยนการเคลื่อนที่ของยาน"]
-]
-},
-
-{
-name:"AI Factory",
-icon:"🤖",
-topic:"เทคโนโลยี",
-mission:"เขียนคำสั่งให้หุ่นยนต์ไปถึงเป้าหมาย",
-objects:["🤖","💻","💎","⚠️","🔧"],
-questions:[
-["Algorithm คืออะไร?",["ขั้นตอนการแก้ปัญหา","อุปกรณ์ไฟฟ้า","ชนิดของแบตเตอรี่","ภาษาเท่านั้น"],0,"Algorithm คือขั้นตอนหรือวิธีการแก้ปัญหาอย่างเป็นลำดับ"],
-["AI ย่อมาจากอะไร?",["Artificial Intelligence","Automatic Internet","Advanced Image","Analog Input"],0,"AI ย่อมาจาก Artificial Intelligence"],
-["ข้อมูลที่ใช้ฝึกโมเดล AI เรียกว่าอะไร?",["Training data","Battery","Pixel","Keyboard"],0,"Training data คือข้อมูลที่ใช้ในการฝึกโมเดล"],
-["คำสั่งวนซ้ำในโปรแกรมเรียกว่าอะไร?",["Loop","Screen","Pixel","Folder"],0,"Loop ใช้สั่งให้ทำงานซ้ำตามเงื่อนไข"],
-["ข้อใดเป็นตัวอย่าง Input?",["คีย์บอร์ด","ลำโพง","จอภาพ","โปรเจกเตอร์"],0,"คีย์บอร์ดใช้ป้อนข้อมูลเข้าสู่คอมพิวเตอร์"]
-]
-},
-
-{
-name:"Science Core",
-icon:"🚀",
-topic:"วิทยาศาสตร์รวม",
-mission:"เปิด SCIENCE CORE และช่วยห้องทดลองทั้งหมด",
-objects:["⚛️","🧬","💎","🔬","☣️","🚀"],
-questions:[
-["พลังงานไม่สามารถสร้างหรือทำลายได้ แต่สามารถ?",["เปลี่ยนรูป","หายไป","หยุดเวลา","กลายเป็นมวลเสมอ"],0,"กฎการอนุรักษ์พลังงานกล่าวว่าพลังงานเปลี่ยนรูปได้"],
-["หน่วย SI ของพลังงานคือ?",["จูล","นิวตัน","แอมแปร์","โวลต์"],0,"พลังงานมีหน่วย SI เป็นจูล (J)"],
-["DNA เกี่ยวข้องกับอะไร?",["ข้อมูลทางพันธุกรรม","แรงโน้มถ่วง","ไฟฟ้าเท่านั้น","อุณหภูมิ"],0,"DNA เป็นสารพันธุกรรมที่เก็บข้อมูลทางพันธุกรรม"],
-["เซลล์เป็นหน่วยพื้นฐานของอะไร?",["สิ่งมีชีวิต","ดาวเคราะห์","โลหะ","พลังงาน"],0,"เซลล์เป็นหน่วยพื้นฐานของสิ่งมีชีวิต"],
-["ข้อใดเป็นเทคโนโลยีที่ใช้การเรียนรู้ของเครื่อง?",["ระบบแนะนำ","ดินสอ","ไม้บรรทัด","แก้วน้ำ"],0,"ระบบแนะนำจำนวนมากใช้ Machine Learning วิเคราะห์ข้อมูล"]
-]
-}
-
-];
-
-
-/* =====================================================
-GAME VARIABLES
-===================================================== */
-
-let currentLevel=1;
-let currentQuestion=0;
-let hp=3;
-let score=0;
-let time=60;
-let running=false;
-let timer=null;
-let keys={};
-
-let px=100;
-let py=300;
-
-let highest=Number(localStorage.getItem("scienceScore")||0);
-let unlocked=Number(localStorage.getItem("scienceLevel")||1);
-
-
-/* =====================================================
-SCREEN
-===================================================== */
-
-function show(id){
-
- document.querySelectorAll(".screen")
- .forEach(x=>x.classList.remove("active"));
-
- document.getElementById(id).classList.add("active");
-
-}
-
-
-/* =====================================================
-MENU
-===================================================== */
-
-function backMenu(){
- show("menu");
-}
-
-function openHow(){
- show("how");
-}
-
-function openScore(){
-
- show("resultScreen");
-
- document.getElementById("resultIcon").textContent="🏆";
- document.getElementById("resultTitle").textContent="HIGH SCORE";
-
- document.getElementById("resultText").textContent=
- "คะแนนสูงสุดของคุณคือ "+highest+" คะแนน";
-
-}
-
-
-/* =====================================================
-LEVEL MENU
-===================================================== */
-
-function openLevels(){
-
- show("levels");
-
- const list=document.getElementById("levelList");
-
- list.innerHTML="";
-
- data.forEach((d,i)=>{
-
- let n=i+1;
-
- let div=document.createElement("div");
-
- div.className="level "+(n<=unlocked?"unlocked":"locked");
-
- div.innerHTML=`
-
- <div class="level-icon">${d.icon}</div>
- <b>LEVEL ${n}</b>
- <div>${d.name}</div>
- <small>${n<=unlocked?"พร้อมเล่น":"🔒 ล็อก"}</small>
-
- ${n<=unlocked?
- `<br><button onclick="startLevel(${n})">เล่น</button>`
- :""
- }
-
- `;
-
- list.appendChild(div);
-
- });
-
-}
-
-
-/* =====================================================
-START LEVEL
-===================================================== */
-
-function startLevel(n){
-
- currentLevel=n;
- currentQuestion=0;
-
- hp=3;
- time=60;
-
- running=true;
-
- px=100;
- py=window.innerHeight/2;
-
- show("gameScreen");
-
- setupLevel();
-
- clearInterval(timer);
-
- timer=setInterval(()=>{
-
- if(!running)return;
-
- time--;
-
- document.getElementById("time").textContent=time;
-
- if(time<=0){
-
-   gameOver("หมดเวลา ⏰");
-
- }
-
- },1000);
-
-}
-
-
-/* =====================================================
-SETUP
-===================================================== */
-
-function setupLevel(){
-
- const d=data[currentLevel-1];
-
- document.getElementById("mission").textContent=
- "LEVEL "+currentLevel+" • "+d.mission;
-
- document.getElementById("hp").textContent=hp;
-
- document.getElementById("points").textContent=score;
-
- document.getElementById("time").textContent=time;
-
- document.getElementById("qcount").textContent=
- currentQuestion+"/"+d.questions.length;
-
- const objects=document.getElementById("objects");
-
- objects.innerHTML="";
-
- document.getElementById("exit").classList.remove("open");
-
- d.objects.forEach((emoji,i)=>{
-
-   let obj=document.createElement("div");
-
-   obj.className="obj ";
-
-   if(emoji==="☣️"||emoji==="⚠️")
-      obj.classList.add("hazard");
-   else if(emoji==="💎")
-      obj.classList.add("crystal");
-   else if(emoji==="🔌"||emoji==="🧪"||emoji==="🔬")
-      obj.classList.add("science");
-   else
-      obj.classList.add("tool");
-
-   obj.textContent=emoji;
-
-   obj.style.left=
-   (180+Math.random()*(window.innerWidth-330))+"px";
-
-   obj.style.top=
-   (130+Math.random()*(window.innerHeight-260))+"px";
-
-   objects.appendChild(obj);
-
- });
-
- updatePlayer();
-
-}
-
-
-/* =====================================================
-KEY CONTROL
-===================================================== */
-
-window.addEventListener("keydown",e=>{
-
- keys[e.key]=true;
-
-});
-
-window.addEventListener("keyup",e=>{
-
- keys[e.key]=false;
-
-});
-
-
-/* MOBILE BUTTON */
-document.querySelectorAll(".move").forEach(btn=>{
-
- btn.addEventListener("pointerdown",()=>{
-   keys[btn.dataset.key]=true;
- });
-
- btn.addEventListener("pointerup",()=>{
-   keys[btn.dataset.key]=false;
- });
-
- btn.addEventListener("pointerleave",()=>{
-   keys[btn.dataset.key]=false;
- });
-
-});
-
-
-/* =====================================================
-MOVEMENT
-===================================================== */
-
-function updatePlayer(){
-
- document.getElementById("player").style.left=px+"px";
- document.getElementById("player").style.top=py+"px";
-
-}
-
-function loop(){
-
- if(running){
-
-   if(keys.ArrowUp||keys.w) py-=5;
-   if(keys.ArrowDown||keys.s) py+=5;
-   if(keys.ArrowLeft||keys.a) px-=5;
-   if(keys.ArrowRight||keys.d) px+=5;
-
-   px=Math.max(0,
-   Math.min(window.innerWidth-55,px));
-
-   py=Math.max(100,
-   Math.min(window.innerHeight-70,py));
-
-   updatePlayer();
-
-   collision();
-
- }
-
- requestAnimationFrame(loop);
-
-}
-
-loop();
-
-
-/* =====================================================
-COLLISION
-===================================================== */
-
-function collision(){
-
- const p=document
- .getElementById("player")
- .getBoundingClientRect();
-
- document.querySelectorAll(".obj").forEach(o=>{
-
-   if(hit(p,o.getBoundingClientRect())){
-
-     if(o.classList.contains("hazard")){
-
-       hp--;
-
-       o.remove();
-
-       document.getElementById("hp").textContent=hp;
-
-       px=100;
-       py=window.innerHeight/2;
-
-       if(hp<=0){
-
-         gameOver("พลังชีวิตหมดแล้ว 💥");
-
-       }
-
-     }
-
-     else if(o.classList.contains("crystal")){
-
-       score+=10;
-
-       o.remove();
-
-       document.getElementById("points").textContent=score;
-
-     }
-
-     else{
-
-       o.remove();
-
-       askQuestion();
-
-     }
-
-   }
-
- });
-
-
- const exit=document
- .getElementById("exit");
-
- if(exit.classList.contains("open")&&
-    hit(p,exit.getBoundingClientRect())){
-
-      finishLevel();
-
- }
-
-}
-
-
-/* =====================================================
-HIT
-===================================================== */
-
-function hit(a,b){
-
- return !(
-   a.right<b.left||
-   a.left>b.right||
-   a.bottom<b.top||
-   a.top>b.bottom
- );
-
-}
-
-
-/* =====================================================
-QUESTION
-===================================================== */
-
-function askQuestion(){
-
- running=false;
-
- const q=data[currentLevel-1].questions[currentQuestion];
-
- document.getElementById("question").textContent=q[0];
-
- const box=document.getElementById("answers");
-
- box.innerHTML="";
-
- document.getElementById("explain").style.display="none";
-
- document.getElementById("continueBtn").style.display="none";
-
- q[1].forEach((answer,i)=>{
-
-   let btn=document.createElement("button");
-
-   btn.className="answer";
-
-   btn.textContent=
-   String.fromCharCode(65+i)+". "+answer;
-
-   btn.onclick=()=>answerQuestion(i);
-
-   box.appendChild(btn);
-
- });
-
- show("questionScreen");
-
-}
-
-
-/* =====================================================
-ANSWER
-===================================================== */
-
-function answerQuestion(choice){
-
- const q=data[currentLevel-1].questions[currentQuestion];
-
- document.querySelectorAll(".answer")
- .forEach(b=>b.disabled=true);
-
- const exp=document.getElementById("explain");
-
- exp.style.display="block";
-
- if(choice===q[2]){
-
-   score+=50;
-
-   exp.innerHTML=
-   "✅ <b>ถูกต้อง!</b><br>"+q[3];
-
- }else{
-
-   score-=20;
-
-   hp--;
-
-   exp.innerHTML=
-   "❌ <b>ยังไม่ถูก</b><br>"+q[3]+
-   "<br>❤️ พลังชีวิตเหลือ "+hp;
-
- }
-
- document.getElementById("hp").textContent=hp;
-
- document.getElementById("points").textContent=score;
-
- document.getElementById("continueBtn").style.display="block";
-
-}
-
-
-/* =====================================================
-CONTINUE
-===================================================== */
-
-function continueAfterQuestion(){
-
- currentQuestion++;
-
- const total=data[currentLevel-1].questions.length;
-
- if(hp<=0){
-
-   gameOver("พลังชีวิตหมดแล้ว 💥");
-
-   return;
-
- }
-
- if(currentQuestion>=total){
-
-   document.getElementById("exit").classList.add("open");
-
-   show("gameScreen");
-
-   running=true;
-
-   document.getElementById("mission").textContent=
-   "✅ ภารกิจสำเร็จ! เดินไปที่ 🚪 เพื่อผ่านด่าน";
-
- }else{
-
-   show("gameScreen");
-
-   running=true;
-
-   document.getElementById("qcount").textContent=
-   currentQuestion+"/"+total;
-
- }
-
-}
-
-
-/* =====================================================
-FINISH LEVEL
-===================================================== */
-
-function finishLevel(){
-
- running=false;
-
- clearInterval(timer);
-
- score+=100;
-
- if(currentLevel>=unlocked){
-
-   unlocked=Math.min(data.length,currentLevel+1);
-
-   localStorage.setItem("scienceLevel",unlocked);
-
- }
-
- if(score>highest){
-
-   highest=score;
-
-   localStorage.setItem("scienceScore",highest);
-
- }
-
- if(currentLevel===data.length){
-
-   winGame();
-
- }else{
-
-   document.getElementById("resultIcon").textContent="🎉";
-
-   document.getElementById("resultTitle").textContent=
-   "LEVEL COMPLETE!";
-
-   document.getElementById("resultText").textContent=
-   "ผ่านด่าน "+currentLevel+
-   " สำเร็จ! คะแนนรวม "+score;
-
-   show("resultScreen");
-
- }
-
-}
-
-
-/* =====================================================
-WIN
-===================================================== */
-
-function winGame(){
-
- document.getElementById("resultIcon").textContent="🏆";
-
- document.getElementById("resultTitle").textContent=
- "SCIENCE MASTER!";
-
- document.getElementById("resultText").textContent=
- "คุณผ่านภารกิจครบทั้ง 10 ด่านแล้ว! "+
- "คะแนนรวม "+score+" คะแนน";
-
- show("resultScreen");
-
-}
-
-
-/* =====================================================
-GAME OVER
-===================================================== */
-
-function gameOver(reason){
-
- running=false;
-
- clearInterval(timer);
-
- if(score>highest){
-
-   highest=score;
-
-   localStorage.setItem("scienceScore",highest);
-
- }
-
- document.getElementById("resultIcon").textContent="💥";
-
- document.getElementById("resultTitle").textContent=
- "GAME OVER";
-
- document.getElementById("resultText").textContent=
- reason+" คะแนน "+score;
-
- show("resultScreen");
-
-}
-
-
-/* =====================================================
-START
-===================================================== */
-
-window.addEventListener("resize",()=>{
-
- px=Math.min(px,window.innerWidth-60);
-
- py=Math.min(py,window.innerHeight-70);
-
-});
-
-</script>
-
+  <header>
+    <h1>🧪 SCIENCE MISSION X</h1>
+    <p>ภารกิจสำรวจและทดสอบอุปกรณ์วิทยาศาสตร์</p>
+  </header>
+
+  <div class="container">
+    <section class="instructions-grid">
+      <!-- วิธีการเล่น -->
+      <div class="card">
+        <h3>🎮 วิธีควบคุม</h3>
+        <p>⬆️ ขึ้น | ⬇️ ลง | ⬅️ ซ้าย | ➡️ ขวา</p>
+        <p>ปุ่ม W A S D ใช้แทนได้</p>
+        <p>📱 มือถือกดปุ่มบนหน้าจอ</p>
+      </div>
+
+      <!-- เป้าหมาย -->
+      <div class="card">
+        <h3>🎯 เป้าหมาย & คะแนน</h3>
+        <p>• สำรวจและสะสมอุปกรณ์วิทยาศาสตร์</p>
+        <p>• ตอบถูก +50 | ภารกิจ +100</p>
+        <p>• ตอบผิด -20 | ชนอันตราย -1 ❤️</p>
+      </div>
+
+      <!-- อุปกรณ์วิทยาศาสตร์ครบ 5 ข้อ -->
+      <div class="card equipment-card" style="grid-column: 1 / -1;">
+        <h3>🔬 อุปกรณ์วิทยาศาสตร์ประจำภารกิจ (5 รายการ)</h3>
+        <ul class="equipment-list">
+          <li>🧪 <b>1. บีเกอร์ (Beaker):</b> ใช้สำหรับบรรจุ ต้ม หรือผสมสารเคมีเหลว</li>
+          <li>🧪 <b>2. หลอดทดลอง (Test Tube):</b> ใช้ใส่สารเคมีปริมาณน้อยเพื่อสังเกตปฏิกิริยา</li>
+          <li>📏 <b>3. กระบอกตวง (Graduated Cylinder):</b> ใช้วัดปริมาตรของเหลวอย่างแม่นยำ</li>
+          <li>🔥 <b>4. ตะเกียงแอลกอฮอล์ (Alcohol Burner):</b> ใช้เป็นแหล่งให้ความร้อนในการทดลอง</li>
+          <li>🔬 <b>5. กล้องจุลทรรศน์ (Microscope):</b> ใช้ส่องขยายวัตถุหรือสิ่งมีชีวิตขนาดเล็ก</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ส่วนจำลองระบบเกม / ภารกิจ -->
+    <div id="game-board">
+      <div class="stats">
+        <span>❤️ ชีวิต: <strong id="hp">3</strong></span>
+        <span>⭐ คะแนน: <strong id="score">0</strong></span>
+        <span>🎯 ข้อที่: <strong id="progress">1/5</strong></span>
+      </div>
+
+      <div id="quiz-box">
+        <h3 id="question-text">คำถามจะแสดงที่นี่</h3>
+        <div class="quiz-options" id="options-container">
+          <!-- ตัวเลือกตอบจะแสดงผ่าน JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ข้อมูลอุปกรณ์และคำถามครบ 5 ข้อ
+    const missionQuestions = [
+      {
+        question: "อุปกรณ์ใดใช้สำหรับบรรจุ ต้ม หรือผสมสารเคมีเหลวปริมาณมาก?",
+        options: ["บีเกอร์ (Beaker)", "หลอดทดลอง (Test Tube)", "กระบอกตวง (Graduated Cylinder)", "กล้องจุลทรรศน์ (Microscope)"],
+        answer: 0,
+        equipment: "บีเกอร์ (Beaker)"
+      },
+      {
+        question: "อุปกรณ์ใดเหมาะสำหรับใส่สารเคมีปริมาณน้อยเพื่อทดสอบปฏิกิริยา?",
+        options: ["ตะเกียงแอลกอฮอล์", "หลอดทดลอง (Test Tube)", "บีเกอร์ (Beaker)", "กระบอกตวง"],
+        answer: 1,
+        equipment: "หลอดทดลอง (Test Tube)"
+      },
+      {
+        question: "หากต้องการวัดปริมาตรของเหลวให้ได้ความแม่นยำที่สุด ควรใช้อุปกรณ์ใด?",
+        options: ["บีเกอร์", "หลอดทดลอง", "กระบอกตวง (Graduated Cylinder)", "ตะเกียงแอลกอฮอล์"],
+        answer: 2,
+        equipment: "กระบอกตวง (Graduated Cylinder)"
+      },
+      {
+        question: "อุปกรณ์ใดใช้เป็นแหล่งให้ความร้อนในการทดลองวิทยาศาสตร์?",
+        options: ["กล้องจุลทรรศน์", "กระบอกตวง", "หลอดทดลอง", "ตะเกียงแอลกอฮอล์ (Alcohol Burner)"],
+        answer: 3,
+        equipment: "ตะเกียงแอลกอฮอล์ (Alcohol Burner)"
+      },
+      {
+        question: "อุปกรณ์ใดใช้สำหรับส่องขยายดูสิ่งมีชีวิตขนาดเล็กที่ไม่สามารถมองเห็นด้วยตาเปล่า?",
+        options: ["กล้องจุลทรรศน์ (Microscope)", "บีเกอร์", "กระบอกตวง", "หลอดทดลอง"],
+        answer: 0,
+        equipment: "กล้องจุลทรรศน์ (Microscope)"
+      }
+    ];
+
+    let currentStep = 0;
+    let score = 0;
+    let hp = 3;
+
+    function loadQuestion() {
+      if (currentStep >= missionQuestions.length) {
+        document.getElementById('quiz-box').innerHTML = `
+          <h2>🎉 MISSION COMPLETE!</h2>
+          <p>คุณสำรวจและผ่านภารกิจอุปกรณ์วิทยาศาสตร์ครบทั้ง 5 ข้อแล้ว!</p>
+          <p>คะแนนรวม: <strong>${score}</strong> คะแนน</p>
+          <button class="btn" onclick="restartGame()">เล่นใหม่อีกครั้ง</button>
+        `;
+        return;
+      }
+
+      const q = missionQuestions[currentStep];
+      document.getElementById('progress').innerText = `${currentStep + 1}/5`;
+      document.getElementById('question-text').innerText = `ภารกิจที่ ${currentStep + 1}: ${q.question}`;
+      
+      const optContainer = document.getElementById('options-container');
+      optContainer.innerHTML = '';
+
+      q.options.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'opt-btn';
+        btn.innerText = opt;
+        btn.onclick = () => checkAnswer(idx);
+        optContainer.appendChild(btn);
+      });
+    }
+
+    function checkAnswer(selectedIdx) {
+      const q = missionQuestions[currentStep];
+      if (selectedIdx === q.answer) {
+        score += 50;
+        alert(`✅ ถูกต้อง! คุณได้รับข้อมูลและสะสม "${q.equipment}" เรียบร้อย (+50 คะแนน)`);
+      } else {
+        score = Math.max(0, score - 20);
+        hp -= 1;
+        alert(`❌ ยังไม่ถูกต้อง! (-20 คะแนน / -1 ❤️)`);
+      }
+
+      document.getElementById('score').innerText = score;
+      document.getElementById('hp').innerText = hp;
+
+      if (hp <= 0) {
+        document.getElementById('quiz-box').innerHTML = `
+          <h2>💥 GAME OVER</h2>
+          <p>พลังชีวิตของคุณหมดลงแล้ว</p>
+          <button class="btn" onclick="restartGame()">ลองใหม่อีกครั้ง</button>
+        `;
+        return;
+      }
+
+      currentStep++;
+      loadQuestion();
+    }
+
+    function restartGame() {
+      currentStep = 0;
+      score = 0;
+      hp = 3;
+      document.getElementById('score').innerText = score;
+      document.getElementById('hp').innerText = hp;
+      document.getElementById('quiz-box').innerHTML = `
+        <h3 id="question-text">คำถามจะแสดงที่นี่</h3>
+        <div class="quiz-options" id="options-container"></div>
+      `;
+      loadQuestion();
+    }
+
+    // เริ่มเกมครั้งแรก
+    loadQuestion();
+  </script>
 </body>
 </html>
